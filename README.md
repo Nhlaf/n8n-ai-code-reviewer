@@ -35,6 +35,14 @@ The goal is to demonstrate how AI and workflow automation can support software d
 - Email/SMTP — Review delivery
 - JSON — Workflow export and sharing
 
+## Screenshots
+-n8n:
+<img width="1601" height="816" alt="Screenshot 2026-10-28 211049" src="https://github.com/user-attachments/assets/95e13f28-e7dc-49cf-8e26-50f744aa4e40" />
+
+-email:
+<img width="1491" height="606" alt="Screenshot 2026-10-28 215050" src="https://github.com/user-attachments/assets/951e0345-685a-4174-8a02-12c571ab0a77" />
+
+
 ## Code Review Criteria
 
 | Criterion | Maximum score |
