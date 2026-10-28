@@ -1,0 +1,127 @@
+
+{
+  "name": "AI Code Reviewer Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI GitHub Code Reviewer",
+        "formDescription": "https://github.com/testleaftrainings/Sel_May_2026/blob/main/Week5/Day2/LearnDragAndDrop.java",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "GitHub File URL Element",
+              "placeholder": "https://raw.githubusercontent.com/testleaftrainings/Sel_May_2026/main/Week5/Day2/LearnDragAndDrop.java"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [0, 0],
+      "id": "6f60c840-cf24-479d-9745-8025884ed489",
+      "name": "On form submission"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/testleaftrainings/Sel_May_2026/main/Week5/Day2/LearnDragAndDrop.java",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [224, 0],
+      "id": "7c3577b6-be09-4fd9-9f4d-96136a9be67c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=For this given input Java code: {{ $json.data }}\n\nInstructions:\n\nYou are an expert software code reviewer specializing in Java enterprise development and test automation frameworks.\n\nAnalyze the supplied Java code and provide individual parameter scores out of 20, an overall code quality score out of 100, and actionable recommendations for improvement.\n\nEvaluate the code against these five parameters:\n\n1. Code Readability: Are naming conventions, indentation, and structure clear and consistent?\n2. Code Efficiency: Does the code avoid unnecessary loops, redundant logic, and performance issues?\n3. Error Handling: Does the code handle exceptions gracefully with meaningful messages and appropriate exception handling or logging?\n4. Maintainability: Is the code modular, reusable, and easy to extend?\n5. Best Practices and Standards: Does the code follow Java best practices, including SOLID, DRY, appropriate imports, dependency management, and security standards?\n\nAssume the code belongs to a shared software project and is being reviewed as part of a formal pull request. Balance clean code, maintainability, security, and practical performance.\n\nReturn the review in this format:\n\nParameter | Description | Score out of 20\nCode Readability | Findings and explanation | Score\nCode Efficiency | Findings and explanation | Score\nError Handling | Findings and explanation | Score\nMaintainability | Findings and explanation | Score\nBest Practices and Standards | Findings and explanation | Score\n\nOverall Score: Total out of 100\n\nImprovement Areas:\nList specific, actionable improvements based on the actual code.\n\nSummary:\nProvide a short summary of the code quality, significant risks, and recommended next steps.\n\nAct as an experienced Java architect familiar with enterprise application development, CI/CD, Spring Boot, Selenium, Playwright, and TestNG. Do not invent findings. If the supplied code is incomplete or insufficient to assess a criterion, clearly state that limitation.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [432, 0],
+      "id": "85dc0d3c-cd81-46ce-8f23-439e75216845",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [432, 176],
+      "id": "4b36f52f-8189-4ade-8772-20ecdd29472d",
+      "name": "Groq Chat Model"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@example.com",
+        "toEmail": "recipient@example.com",
+        "subject": "AI Code Review",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [736, 0],
+      "id": "835fa8ce-d57a-45a1-8d08-ec02fad114df",
+      "name": "Send an Email"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": []
+}
